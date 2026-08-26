@@ -52,7 +52,7 @@ export function BootStage({ cfg, next }) {
         className="fixed left-6 top-1/2 -translate-y-1/2 -rotate-90 origin-left font-mono text-[0.55rem] tracking-[0.4em] uppercase text-[color:var(--ink-faint)] hidden sm:block"
         aria-hidden="true"
       >
-        private · do not forward
+        I love you IK I messed up
       </motion.span>
 
       <div className="flex flex-col items-center text-center">

@@ -9,9 +9,8 @@ export const config = {
   archive: {
     boot: "INITIALISING MEMORY ARCHIVE",
     log: [
-      "locating memories… ok",
-      "checking last year… missing",
-      "identifying culprit… it's me",
+      "Something is missin----  Memories",
+      "The real culprit for this is me",
     ],
     cta: "okay… let's do this",
     missing: "INFINITE MEMORY MISSING",
