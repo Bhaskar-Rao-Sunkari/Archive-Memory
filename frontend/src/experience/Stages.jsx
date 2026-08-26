@@ -146,7 +146,8 @@ export function IntroStage({ cfg, next }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 1 }}
-          className="annotation text-lg absolute -right-2 sm:right-4 top-0 rotate-6 hidden sm:block"
+          className="annotation text-lg absolute -right-2 sm:right-4 top-0 rotate-6 hidden sm:block px-3.5 py-1.5 rounded-[3px] paper-shadow"
+          style={{ backgroundColor: "#4A3B2C", color: "var(--bg-light)" }}
         >
           this took a while, ok
         </motion.span>
