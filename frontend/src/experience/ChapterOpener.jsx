@@ -40,7 +40,7 @@ export default function ChapterOpener({ chapter, next, tone = "light" }) {
           className="flex items-center gap-4 origin-left mb-8"
         >
           <span className="h-px w-16" style={{ backgroundColor: accent }} />
-          <span className="font-mono text-[0.66rem] tracking-[0.32em] uppercase" style={{ color: accent }}>
+          <span className="font-mono text-[0.78rem] tracking-[0.34em] uppercase" style={{ color: accent }}>
             Chapter {chapter.n}
           </span>
         </motion.div>

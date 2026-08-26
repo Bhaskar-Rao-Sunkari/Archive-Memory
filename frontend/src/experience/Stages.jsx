@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Stage, Btn, Label, Stamp, fadeUp } from "./ui";
 import Typewriter from "../components/Typewriter";
-import PhotoReveal from "./PhotoReveal";
 import MovingNoButton from "./MovingNoButton";
 
-/* ---------------- 0 · BOOT ---------------- */
+/* ---------------- BOOT — ARCHIVE V.01 ---------------- */
 export function BootStage({ cfg, next }) {
-  const [phase, setPhase] = useState(0); // 0 typing, 1 progress done
+  const [phase, setPhase] = useState(0);
   const [pct, setPct] = useState(0);
 
   useEffect(() => {
@@ -20,32 +19,81 @@ export function BootStage({ cfg, next }) {
         }
         return p + 2;
       });
-    }, 22);
+    }, 26);
     return () => clearInterval(id);
   }, [phase]);
 
+  const logThresholds = [18, 48, 78];
+  const corners = [
+    "top-6 left-6 border-t border-l",
+    "top-6 right-6 border-t border-r",
+    "bottom-6 left-6 border-b border-l",
+    "bottom-6 right-6 border-b border-r",
+  ];
+
   return (
     <Stage testid="stage-boot">
+      {/* delicate registration corners */}
+      {corners.map((c, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 + i * 0.12, duration: 0.8 }}
+          className={`fixed w-7 h-7 ${c}`}
+          style={{ borderColor: "rgba(43,33,23,0.4)" }}
+          aria-hidden="true"
+        />
+      ))}
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1 }}
+        className="fixed left-6 top-1/2 -translate-y-1/2 -rotate-90 origin-left font-mono text-[0.55rem] tracking-[0.4em] uppercase text-[color:var(--ink-faint)] hidden sm:block"
+        aria-hidden="true"
+      >
+        private · do not forward
+      </motion.span>
+
       <div className="flex flex-col items-center text-center">
-        <Stamp className="mb-10">ARCHIVE v.01</Stamp>
-        <h1 className="font-mono text-sm sm:text-lg tracking-[0.3em] text-[color:var(--ink)]">
-          <Typewriter text={`${cfg.archive.boot}…`} speed={65} onDone={() => setPhase(1)} />
+        <Stamp className="mb-12">ARCHIVE v.01</Stamp>
+        <h1 className="font-mono text-base sm:text-2xl tracking-[0.28em] text-[color:var(--ink)] font-medium">
+          <Typewriter text={`${cfg.archive.boot}…`} speed={60} onDone={() => setPhase(1)} />
         </h1>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: phase >= 1 ? 1 : 0 }}
-          className="mt-10 w-56 max-w-[70vw]"
+          className="mt-10 w-72 max-w-[76vw]"
         >
-          <div className="h-px w-full bg-[color:var(--line)] relative overflow-hidden">
+          <div className="h-[3px] w-full bg-[color:var(--surface)] rounded-full relative overflow-hidden" style={{ border: "1px solid rgba(43,33,23,0.18)" }}>
             <motion.div
               className="absolute left-0 top-0 h-full bg-[color:var(--accent-2)]"
               animate={{ width: `${pct}%` }}
               transition={{ ease: "linear" }}
             />
           </div>
-          <div className="flex justify-between mt-2">
-            <Label>loading memories</Label>
-            <Label>{pct}%</Label>
+          <div className="flex justify-between mt-2.5">
+            <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase text-[color:var(--ink-soft)]">loading memories</span>
+            <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase text-[color:var(--ink)]">{pct}%</span>
+          </div>
+
+          {/* playful init log */}
+          <div className="mt-6 space-y-1.5 text-left min-h-[3.6rem]" data-testid="boot-log">
+            {cfg.archive.log.map((l, i) =>
+              pct >= logThresholds[i] ? (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className={`font-mono text-[0.62rem] tracking-[0.14em] ${l.includes("missing") || l.includes("me") ? "text-[color:var(--accent-2)]" : "text-[color:var(--ink-soft)]"}`}
+                >
+                  <span className="text-[color:var(--ink-faint)] mr-2">›</span>
+                  {l}
+                </motion.p>
+              ) : null
+            )}
           </div>
         </motion.div>
 
@@ -55,10 +103,10 @@ export function BootStage({ cfg, next }) {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9 }}
-              className="mt-12"
+              className="mt-10"
             >
               <Btn onClick={next} data-testid="boot-enter">
-                step inside
+                {cfg.archive.cta}
               </Btn>
             </motion.div>
           )}
@@ -68,7 +116,7 @@ export function BootStage({ cfg, next }) {
   );
 }
 
-/* ---------------- 1 · INTRO ---------------- */
+/* ---------------- PRE-CHAPTER GATE ---------------- */
 export function IntroStage({ cfg, next }) {
   return (
     <Stage testid="stage-intro">
@@ -107,198 +155,86 @@ export function IntroStage({ cfg, next }) {
   );
 }
 
-/* ---------------- 2 · THE PROBLEM (progressive reveal) ---------------- */
-export function ProblemStage({ cfg, next }) {
-  const lines = cfg.problem;
-  const [shown, setShown] = useState(1);
-  const done = shown >= lines.length;
-
+/* ---------------- OFFICIAL ASSESSMENT (score) ---------------- */
+function Counter({ value, suffix }) {
+  const [v, setV] = useState(0);
+  const started = useRef(false);
+  const start = () => {
+    if (started.current) return;
+    started.current = true;
+    const dur = 1300;
+    const t0 = performance.now();
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      setV(value * e);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const out = Number.isInteger(value) ? Math.round(v) : v.toFixed(1);
   return (
-    <Stage testid="stage-problem">
-      <Stamp className="mb-10">FILE · CORRUPTED</Stamp>
-      <div className="space-y-5">
-        {lines.slice(0, shown).map((l, i) => (
-          <motion.p
-            key={i}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className={`font-serif leading-tight ${i === lines.length - 1 ? "font-semibold text-3xl sm:text-5xl text-[color:var(--ink)]" : "font-medium text-2xl sm:text-3xl text-[color:var(--ink-soft)]"}`}
-          >
-            {l}
-          </motion.p>
-        ))}
-      </div>
-      <div className="mt-12">
-        {done ? (
-          <Btn onClick={next} data-testid="problem-cta">
-            {cfg.problemCta}
-          </Btn>
-        ) : (
-          <button
-            data-testid="problem-reveal"
-            onClick={() => setShown((s) => s + 1)}
-            className="group inline-flex items-center gap-3 font-mono text-[0.7rem] tracking-[0.2em] uppercase text-[color:var(--ink-soft)] hover:text-[color:var(--ink)] transition-colors"
-          >
-            <span className="w-8 h-px bg-[color:var(--accent-2)] group-hover:w-12 transition-all" />
-            reveal
-          </button>
-        )}
-      </div>
-    </Stage>
+    <motion.span
+      onViewportEnter={start}
+      viewport={{ once: true }}
+      className="font-serif font-semibold text-2xl sm:text-3xl text-[color:var(--ink)] tabular-nums"
+    >
+      {out}
+      <span className="font-mono text-[0.62rem] tracking-[0.14em] text-[color:var(--ink-soft)] ml-1">{suffix}</span>
+    </motion.span>
   );
 }
 
-/* ---------------- 3 · CONFESSION ---------------- */
-export function ConfessionStage({ cfg, next }) {
-  const [typed, setTyped] = useState(false);
-  return (
-    <Stage testid="stage-confession">
-      <Label>THE PART WHERE I ADMIT IT</Label>
-      <h2 className="font-serif font-semibold text-5xl sm:text-7xl mt-6 leading-none">
-        <Typewriter text={cfg.confession.line} speed={80} onDone={() => setTyped(true)} />
-      </h2>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: typed ? 1 : 0 }} transition={{ duration: 0.9 }}>
-        <p className="mt-7 text-lg text-[color:var(--ink-soft)] max-w-lg">{cfg.confession.sub}</p>
-        <p className="annotation text-2xl mt-4">{cfg.confession.annotation}</p>
-        <div className="mt-12">
-          <Btn onClick={next} data-testid="confession-cta">
-            {cfg.confession.cta}
-          </Btn>
-        </div>
-      </motion.div>
-    </Stage>
-  );
-}
-
-/* ---------------- 4 · MEMORIES ---------------- */
-export function MemoriesStage({ cfg, next }) {
-  const [revealed, setRevealed] = useState(0);
-  return (
-    <Stage testid="stage-memories" className="!justify-start pt-24">
-      <div className="text-center mb-12">
-        <Label>{cfg.memoriesIntro.kicker}</Label>
-        <h2 className="font-serif font-semibold text-4xl sm:text-5xl mt-4">{cfg.memoriesIntro.line}</h2>
-        <p className="annotation text-xl mt-3">{cfg.memoriesIntro.sub}</p>
-      </div>
-      <div className="columns-1 sm:columns-2 gap-6 [&>*]:mb-6">
-        {cfg.photos.map((p, i) => (
-          <div key={i} className="break-inside-avoid">
-            <PhotoReveal photo={p} index={i} rotate={i % 2 === 0 ? -1.4 : 1.6} onReveal={() => setRevealed((r) => Math.max(r, i + 1))} />
-          </div>
-        ))}
-      </div>
-      <div className="text-center mt-14 mb-8">
-        <Btn onClick={next} data-testid="memories-cta" variant={revealed > 0 ? "solid" : "ghost"}>
-          but wait — there's a catch
-        </Btn>
-      </div>
-    </Stage>
-  );
-}
-
-/* ---------------- 6 · LOST REVEAL ---------------- */
-export function LostStage({ cfg, next }) {
-  return (
-    <Stage testid="stage-lost">
-      <div className="max-w-xl">
-        <motion.h2 variants={fadeUp} initial="hidden" animate="show" custom={0} className="font-serif font-semibold text-3xl sm:text-5xl leading-tight">
-          {cfg.lostReveal.line}
-        </motion.h2>
-        <motion.p variants={fadeUp} initial="hidden" animate="show" custom={1} className="mt-6 text-lg text-[color:var(--ink-soft)]">
-          {cfg.lostReveal.sub}
-        </motion.p>
-        <motion.div variants={fadeUp} initial="hidden" animate="show" custom={2} className="mt-12">
-          <Btn onClick={next} data-testid="lost-cta">
-            so here's my case
-          </Btn>
-        </motion.div>
-      </div>
-    </Stage>
-  );
-}
-
-/* ---------------- 7 · EARN IT ---------------- */
-export function EarnStage({ cfg, next }) {
-  const [answered, setAnswered] = useState(false);
-  return (
-    <Stage testid="stage-earn" className="!justify-start pt-24">
-      <div className="w-full max-w-lg mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <Label>{cfg.earnIt.kicker}</Label>
-          <Stamp>form 404</Stamp>
-        </div>
-        <div className="bg-[color:var(--surface)] hairline rounded-md p-6 sm:p-8 paper-shadow">
-          {cfg.earnIt.fields.map(([k, v], i) => (
-            <motion.div
-              key={k}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.6 }}
-              className="flex items-baseline justify-between gap-4 py-2.5 border-b border-[color:var(--line)] last:border-0"
-            >
-              <span className="font-mono text-[0.62rem] tracking-[0.18em] uppercase text-[color:var(--ink-faint)]">{k}</span>
-              <span className={`text-right ${v === "PENDING" ? "font-mono text-[0.7rem] tracking-[0.2em] text-[color:var(--accent-2)]" : "annotation text-lg"}`}>{v}</span>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          {!answered ? (
-            <>
-              <p className="font-serif text-2xl sm:text-3xl mb-8">{cfg.earnIt.question}</p>
-              <MovingNoButton yesLabel="obviously" noLabel="no" onYes={() => setAnswered(true)} testid="earn-choice" />
-            </>
-          ) : (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-              <p className="annotation text-2xl mb-8">knew you'd come around.</p>
-              <Btn onClick={next} data-testid="earn-cta">
-                see the assessment
-              </Btn>
-            </motion.div>
-          )}
-        </div>
-      </div>
-    </Stage>
-  );
-}
-
-/* ---------------- 8 · SCORE ---------------- */
 export function ScoreStage({ cfg, next }) {
   return (
-    <Stage testid="stage-score" className="!justify-start pt-24">
+    <Stage testid="stage-score" className="!justify-start pt-28 pb-24">
       <div className="w-full max-w-lg mx-auto">
         <Label>{cfg.score.kicker}</Label>
-        <div className="mt-10 space-y-7">
+        <h2 className="font-serif font-semibold text-3xl sm:text-4xl mt-4">{cfg.score.title}</h2>
+        <div className="mt-12 space-y-9">
           {cfg.score.rows.map((r, i) => (
-            <div key={r.label}>
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="text-sm text-[color:var(--ink)] pr-4">{r.label}</span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + i * 0.15 }}
-                  className="font-mono text-[0.72rem] tracking-[0.15em] text-[color:var(--accent-2)]"
-                >
-                  {r.display}
-                </motion.span>
+            <motion.div
+              key={r.label}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.7 }}
+            >
+              <div className="flex items-end justify-between gap-4 mb-2.5">
+                <span className="text-sm sm:text-[0.95rem] text-[color:var(--ink)]">{r.label}</span>
+                {r.type === "counter" ? (
+                  <Counter value={r.value} suffix={r.suffix} />
+                ) : (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: "backOut" }}
+                    className="annotation text-xl whitespace-nowrap px-3 py-1 rounded-full"
+                    style={{ border: "1px solid rgba(43,33,23,0.3)" }}
+                  >
+                    {r.display}
+                  </motion.span>
+                )}
               </div>
-              <div className="h-1.5 w-full bg-[color:var(--surface)] rounded-full overflow-hidden hairline">
+              <div className="h-1 w-full bg-[color:var(--surface)] rounded-full overflow-hidden" style={{ border: "1px solid rgba(43,33,23,0.14)" }}>
                 <motion.div
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: r.value === 0 ? "#b34a3a" : "var(--accent-2)" }}
+                  className="h-full rounded-full bg-[color:var(--accent-2)]"
                   initial={{ width: 0 }}
-                  whileInView={{ width: `${r.value}%` }}
+                  whileInView={{ width: `${r.pct}%` }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.15, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.3 + i * 0.12, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 />
               </div>
-            </div>
+              {r.note && (
+                <p className="font-mono text-[0.58rem] tracking-[0.2em] uppercase text-[color:var(--accent-2)] mt-1.5">
+                  * {r.note}
+                </p>
+              )}
+            </motion.div>
           ))}
         </div>
-        <div className="mt-14 text-center">
+        <div className="mt-16 text-center">
           <Btn onClick={next} data-testid="score-cta">
             {cfg.score.cta}
           </Btn>
@@ -308,21 +244,41 @@ export function ScoreStage({ cfg, next }) {
   );
 }
 
-/* ---------------- 10 · APOLOGY (quiet) ---------------- */
+/* ---------------- QUIET TURNING POINT ---------------- */
+export function QuietStage({ cfg, next }) {
+  useEffect(() => {
+    const t = setTimeout(next, 3200);
+    return () => clearTimeout(t);
+  }, [next]);
+  return (
+    <Stage testid="stage-quiet" bg="var(--bg-light)">
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.6 }}
+        className="font-serif italic text-3xl sm:text-4xl text-center text-[color:var(--ink)]"
+      >
+        {cfg.quiet.line}
+      </motion.p>
+    </Stage>
+  );
+}
+
+/* ---------------- CHAPTER 04 · THE REAL APOLOGY ---------------- */
 export function ApologyStage({ cfg, next }) {
   return (
-    <Stage testid="stage-apology" bg="var(--bg-light)">
-      <div className="grid sm:grid-cols-[1fr_0.9fr] gap-10 items-center">
+    <Stage testid="stage-apology" bg="var(--bg-light)" wide>
+      <div className="grid sm:grid-cols-[1.1fr_0.8fr] gap-12 sm:gap-16 items-center">
         <div>
-          <div className="space-y-4">
+          <div className="space-y-7">
             {cfg.apology.lines.map((l, i) => (
               <motion.p
                 key={i}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.3 + i * 0.5, duration: 1.1 }}
-                className="font-serif font-medium text-2xl sm:text-3xl leading-snug text-[color:var(--ink)]"
+                transition={{ delay: 0.4 + i * 0.55, duration: 1.1 }}
+                className="font-serif font-medium text-3xl sm:text-4xl leading-[1.25] text-[color:var(--ink)]"
               >
                 {l}
               </motion.p>
@@ -332,20 +288,33 @@ export function ApologyStage({ cfg, next }) {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 + cfg.apology.lines.length * 0.5, duration: 1 }}
-            className="annotation text-2xl mt-8"
+            transition={{ delay: 0.5 + cfg.apology.lines.length * 0.55, duration: 1 }}
+            className="annotation text-3xl mt-10"
           >
             {cfg.apology.annotation}
           </motion.p>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 1 + cfg.apology.lines.length * 0.5 }} className="mt-12">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1.2 + cfg.apology.lines.length * 0.55 }}
+            className="mt-14"
+          >
             <Btn onClick={next} data-testid="apology-cta">
               {cfg.apology.cta}
             </Btn>
           </motion.div>
         </div>
-        <motion.div initial={{ opacity: 0, scale: 1.04 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.6 }} className="bg-[color:var(--bg)] p-3 pb-4 paper-shadow rounded-[2px] rotate-1">
+        <motion.div
+          initial={{ opacity: 0, scale: 1.04 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.6 }}
+          className="bg-[color:var(--bg)] p-3 pb-4 paper-shadow rounded-[2px] rotate-1 max-w-sm mx-auto w-full"
+        >
           <div className="relative aspect-[3/4] overflow-hidden bg-[color:var(--accent)]">
             <img src={cfg.heroPhoto.src} alt={cfg.heroPhoto.caption} className="absolute inset-0 w-full h-full object-cover photo-warm" />
+            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "inset 0 0 70px rgba(43,33,23,0.2)" }} />
           </div>
           <p className="annotation text-lg mt-2">{cfg.heroPhoto.caption}</p>
         </motion.div>
@@ -354,13 +323,13 @@ export function ApologyStage({ cfg, next }) {
   );
 }
 
-/* ---------------- 11 · FINAL REQUEST ---------------- */
+/* ---------------- FINAL QUESTION ---------------- */
 export function FinalRequestStage({ cfg, next }) {
   return (
     <Stage testid="stage-final" bg="var(--bg-light)">
       <div className="text-center max-w-xl mx-auto">
         <Label>{cfg.finalRequest.kicker}</Label>
-        <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4 }} className="mx-auto mt-8 w-44 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px] -rotate-2">
+        <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4 }} className="mx-auto mt-8 w-40 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px] -rotate-2">
           <div className="relative aspect-square overflow-hidden bg-[color:var(--accent)]">
             <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
           </div>
@@ -375,43 +344,87 @@ export function FinalRequestStage({ cfg, next }) {
   );
 }
 
-/* ---------------- 12 · UNLOCK ---------------- */
+/* ---------------- FINAL SCREEN — warm, not technical ---------------- */
 export function UnlockStage({ cfg, restart }) {
-  const [recovered, setRecovered] = useState(false);
+  const [open, setOpen] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setRecovered(true), 1600);
+    const t = setTimeout(() => setOpen(true), 1500);
     return () => clearTimeout(t);
   }, []);
   const u = cfg.unlock;
+
   return (
-    <Stage testid="stage-unlock">
-      <div className="text-center max-w-lg mx-auto">
-        <Label>ARCHIVE STATUS</Label>
-        <div className="mt-8 flex items-center justify-center gap-4 font-mono text-sm sm:text-lg tracking-[0.2em]">
-          <span className="text-[color:var(--ink-faint)] line-through">{u.from}</span>
-          <motion.span animate={{ x: recovered ? 0 : -6, opacity: recovered ? 1 : 0.3 }}>→</motion.span>
-          <AnimatePresence mode="wait">
-            {recovered && (
-              <motion.span key="rec" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-[color:var(--accent-2)]" data-testid="recovered-label">
-                {u.to}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </div>
+    <Stage testid="stage-unlock" bg="var(--bg-light)">
+      <div className="text-center max-w-lg mx-auto py-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="inline-flex items-center gap-3"
+        >
+          <motion.span
+            className="h-px w-10 bg-[color:var(--accent-2)]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1 }}
+          />
+          <span className="font-mono text-[0.7rem] tracking-[0.32em] uppercase text-[color:var(--accent-2)]" data-testid="unlock-status">
+            {u.status}
+          </span>
+          <motion.span
+            className="h-px w-10 bg-[color:var(--accent-2)]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1 }}
+          />
+        </motion.div>
 
         <AnimatePresence>
-          {recovered && (
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }}>
-              <h2 className="font-serif font-semibold text-4xl sm:text-6xl mt-10">{u.line}</h2>
-              <p className="mt-5 text-lg text-[color:var(--ink-soft)]">{u.sub}</p>
+          {open && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1 }}>
+              <motion.div
+                initial={{ opacity: 0, scale: 1.06, rotate: -3 }}
+                animate={{ opacity: 1, scale: 1, rotate: 2 }}
+                transition={{ duration: 1.4, delay: 0.2 }}
+                className="mx-auto mt-10 w-44 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px]"
+              >
+                <div className="relative aspect-square overflow-hidden bg-[color:var(--accent)]">
+                  <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
+                </div>
+                <p className="annotation text-base mt-1.5">{cfg.heroPhoto.caption}</p>
+              </motion.div>
+
+              <div className="mt-10 space-y-3">
+                {u.lines.map((l, i) => (
+                  <motion.p
+                    key={i}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + i * 0.5, duration: 1 }}
+                    className="font-serif font-medium text-2xl sm:text-3xl leading-snug text-[color:var(--ink)]"
+                  >
+                    {l}
+                  </motion.p>
+                ))}
+              </div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 + u.lines.length * 0.5, duration: 1.2 }}
+                className="annotation text-3xl mt-8"
+                data-testid="unlock-closer"
+              >
+                {u.closer}
+              </motion.p>
 
               {u.audioSrc ? (
                 <div className="mt-10 inline-flex flex-col items-center gap-2">
                   <button
                     data-testid="audio-toggle"
                     onClick={() => setAudioOn((v) => !v)}
-                    className="hairline rounded-full px-5 py-2 font-mono text-[0.62rem] tracking-[0.2em] uppercase text-[color:var(--ink-soft)] hover:bg-[color:var(--surface)]"
+                    className="rounded-full px-5 py-2 font-mono text-[0.62rem] tracking-[0.2em] uppercase text-[color:var(--ink)] hover:bg-[color:var(--surface)] transition-colors"
+                    style={{ border: "1px solid rgba(43,33,23,0.35)" }}
                   >
                     {audioOn ? "pause" : "play a little"} · {u.songTitle}
                   </button>
@@ -419,7 +432,9 @@ export function UnlockStage({ cfg, restart }) {
                   <audio src={u.audioSrc} autoPlay={false} loop muted={!audioOn} ref={(el) => { if (el) { audioOn ? el.play().catch(() => {}) : el.pause(); } }} />
                 </div>
               ) : (
-                <p className="label mt-10">♪ {u.songTitle} — {u.songArtist} · (add your clip in config)</p>
+                <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[color:var(--ink-soft)] mt-10">
+                  ♪ {u.songTitle} — {u.songArtist} · (add your clip in config)
+                </p>
               )}
 
               <div className="mt-12">

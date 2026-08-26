@@ -41,5 +41,18 @@ Boot(INITIALISING) → Intro → Problem(progressive reveal) → Confession → 
 - Persist progress / resume
 - Real audio clip upload via object storage
 
+## V3 Refinement Pass (2026-06, per user's 32-point brief)
+- Typography: DM Sans body (replaced Inter), Cormorant Garamond display, restrained JetBrains Mono micro-labels
+- Boot redesign: registration corner marks, "PRIVATE · DO NOT FORWARD" side label, playful init log ("identifying culprit… it's me"), CTA "okay… let's do this"
+- Chapter 01: scroll-based storytelling (whileInView left→right reveals), margin note, in-view typewriter confession — no per-paragraph buttons
+- Chapter 02: asymmetric 12-col photo composition with tap-caption reveals + emotional lost lines at end
+- Chapter 03: two-panel horizontal swipe (drag + dots + hint) — Form 404 with rotated UNDER REVIEW stamp / formal letter "To, The Respected Keeper of Memories" — then verdict
+- MovingNoButton rewritten: dashed "containment zone" below YES, min-jump distance, wobble/shrink escalation, attempts counter, never overlaps YES/text/screen edges (verified by tests)
+- Score redesign: mixed formats (9.8/10, 100%, 0.5/10 "under investigation", badge pills), animated counters
+- QuietStage "okay. no more jokes." → MEMORY LOST turning point
+- Apology: larger 4-line serif text, breathing room; Final screen redesigned warm ("ARCHIVE UNLOCKED", heartfelt lines, "thank you. 🤎", song slot), LOCKED clipping gone
+- Micro-element contrast raised globally (Stamp borders, labels)
+- Testing agent iteration_2.json: 100% frontend+backend, mobile no-overflow, share link regression pass
+
 ## Editing Guide
-Swap photos + all copy in `config.js`. Add final-screen music by placing a file in `/public/audio` and setting `config.unlock.audioSrc`.
+All copy/CTAs/photos/score values/letter text in `/app/frontend/src/experience/config.js`. Final personal wording to be supplied by user — placeholders are intentionally vague.

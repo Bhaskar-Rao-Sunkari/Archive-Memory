@@ -8,6 +8,12 @@ export const config = {
   // ---- Archive system messages (cinematic interludes) ----
   archive: {
     boot: "INITIALISING MEMORY ARCHIVE",
+    log: [
+      "locating memories… ok",
+      "checking last year… missing",
+      "identifying culprit… it's me",
+    ],
+    cta: "okay… let's do this",
     missing: "INFINITE MEMORY MISSING",
     lost: "MEMORY LOST",
   },
@@ -18,30 +24,29 @@ export const config = {
       n: "01",
       title: "The Confession",
       sub: "the part where I admit what I did",
-      cta: "Open Chapter 01",
+      cta: "let's hear it, then",
     },
     {
       n: "02",
       title: "What Survived",
       sub: "not everything is gone. promise.",
-      cta: "Open Chapter 02",
+      cta: "show me what's left",
     },
     {
       n: "03",
       title: "The Negotiation",
       sub: "in which I attempt to earn it back",
-      cta: "Open Chapter 03",
+      cta: "let's negotiate",
     },
     {
       n: "04",
       title: "The Real Apology",
       sub: "no more jokes. mostly.",
-      cta: "Open Chapter 04",
+      cta: "go on…",
     },
   ],
 
   // ---- Current-year photos (placeholders — replace src with real ones) ----
-  // orientation just hints the frame ratio: "portrait" | "landscape"
   photos: [
     {
       src: "https://images.unsplash.com/photo-1758225104742-718edea1f371?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
@@ -81,91 +86,130 @@ export const config = {
     caption: "us — this year",
   },
 
-  // ---- Copy blocks (intentionally vague & easy to edit) ----
+  // ---- Pre-chapter gate ----
   intro: {
     kicker: "PRIVATE ARCHIVE — ACCESS RESTRICTED TO ONE PERSON",
     line: "You already know why this exists.",
     sub: "Go slow. There are little things everywhere.",
-    cta: "OPEN THE ARCHIVE",
+    cta: "I have some explaining to do",
   },
 
-  problem: [
-    "There was a collection of memories.",
-    "Ours. From last year.",
-    "And then… something happened to them.",
-    "You know exactly what happened.",
-  ],
-  problemCta: "so, about that",
+  // ---- Chapter 01 — The Confession (scroll story) ----
+  problem: {
+    stamp: "FILE · CORRUPTED",
+    scrollHint: "scroll — it gets worse",
+    lines: [
+      "There was a collection of memories.",
+      "Ours. From last year.",
+      "And then… something happened to them.",
+      "You know exactly what happened.",
+    ],
+    marginNote: "// this is the bad part",
+  },
 
   confession: {
+    kicker: "THE PART WHERE I ADMIT IT",
     line: "I deleted them.",
     sub: "The photos from last year. Gone. By my own two, deeply unqualified hands.",
     annotation: "in my defence, I have no defence.",
-    cta: "I know. keep going.",
+    cta: "and the rest of the photos?",
   },
 
+  // ---- Chapter 02 — What Survived ----
   memoriesIntro: {
     kicker: "WHAT I STILL HAVE",
     line: "But not everything is gone.",
-    sub: "Tap each one.",
+    sub: "tap each one. they're worth it.",
+    aside: "little proof we're still good at this",
   },
 
   lostReveal: {
-    line: "The ones from last year, though —",
-    sub: "those I can't get back on my own. Only you have them now.",
+    lines: [
+      "The ones from last year, though —",
+      "those I can't get back on my own.",
+      "Only you have them now.",
+    ],
+    cta: "so what now?",
   },
 
+  // ---- Chapter 03 — The Negotiation ----
   earnIt: {
     kicker: "MEMORY RECOVERY REQUEST",
+    formTitle: "FORM 404 — MEMORY RECOVERY REQUEST",
+    stamp: "UNDER REVIEW",
     fields: [
       ["Applicant", "me (the culprit)"],
       ["Reason for request", "deleted the memories"],
-      ["Current standing", "under review"],
+      ["Request", "access to the lost archive"],
       ["Regret", "extremely high"],
       ["Common sense during deletion", "under investigation"],
       ["Effort to recover", "suspiciously high"],
-      ["Approval", "PENDING"],
+      ["Current status", "UNDER REVIEW"],
     ],
+    swipeHint: "there's a formal application attached",
+    letter: {
+      tag: "APPLICATION № 001",
+      to: ["To,", "The Respected Keeper of Memories,", "Department of Last Year's Photos."],
+      body: [
+        "Respected madam,",
+        "I, the undersigned, hereby formally apologise for the Incident. I write to humbly request re-issuance of the lost archive, which was misplaced due to circumstances entirely within my control.",
+        "If approved, I promise to guard it with both hands and at least 60% more common sense.",
+      ],
+      signoff: ["Yours regretfully,", "the applicant"],
+    },
     question: "Does the applicant deserve to have their request reviewed?",
+    yes: "fine… I'm listening",
+    no: "no.",
+    afterYes: "knew you'd come around.",
+    cta: "see the official assessment",
   },
 
   score: {
-    kicker: "MEMORY RECOVERY SCORE",
+    kicker: "OFFICIAL ASSESSMENT",
+    title: "The applicant has been evaluated.",
     rows: [
-      { label: "Apology", value: 100, display: "100%" },
-      { label: "Regret", value: 100, display: "100%" },
-      { label: "Common sense before deleting photos", value: 0, display: "0%" },
-      { label: "Effort to fix the situation", value: 100, display: "100%" },
-      { label: "Deserving of the archive", value: 62, display: "pending…" },
+      { label: "Apology", type: "counter", value: 9.8, suffix: " / 10", pct: 98 },
+      { label: "Regret", type: "counter", value: 100, suffix: "%", pct: 100 },
+      { label: "Common sense before deleting the photos", type: "counter", value: 0.5, suffix: " / 10", pct: 5, note: "under investigation" },
+      { label: "Effort to fix the situation", type: "badge", display: "suspiciously high", pct: 92 },
+      { label: "Chances of forgiveness", type: "badge", display: "pending your response…", pct: 62 },
     ],
-    cta: "okay, enough jokes",
+    cta: "alright — the serious part",
   },
 
+  // ---- Turning point ----
+  quiet: {
+    line: "okay. no more jokes.",
+  },
+
+  // ---- Chapter 04 — The Real Apology ----
   apology: {
     lines: [
       "Deleting them was careless.",
-      "And I know it hurt you — not because of the files,",
+      "And I know it hurt — not because of the files,",
       "but because of what they held.",
-      "Those weren't just photos.",
       "They were things we made together.",
     ],
     annotation: "I'm sorry. Genuinely.",
-    cta: "one last thing",
+    cta: "can I ask you something?",
   },
 
   finalRequest: {
-    kicker: "RECOVERY REQUEST — FINAL STEP",
-    line: "Would you send me the ones from last year?",
+    kicker: "ONE LAST QUESTION",
+    line: "Would you send me the photos from last year again?",
     sub: "That's the whole reason for all of this.",
     yes: "RELEASE THE ARCHIVE",
-    no: "not a chance",
+    no: "hmm, let me think",
   },
 
+  // ---- Final screen ----
   unlock: {
-    from: "LOCKED",
-    to: "RECOVERED",
-    line: "Archive restored.",
-    sub: "Now go check your messages — and maybe forgive me.",
+    status: "ARCHIVE UNLOCKED",
+    lines: [
+      "Thank you for making me work for them.",
+      "I promise I won't be stupid with them again.",
+    ],
+    closer: "thank you. 🤎",
     // Optional: drop your own audio file at /public/audio and set path here.
     // Song reference (audio not included): "Memories" — Maroon 5.
     songTitle: "Memories",
