@@ -157,32 +157,31 @@ export function IntroStage({ cfg, next }) {
 }
 
 /* ---------------- OFFICIAL ASSESSMENT (score) ---------------- */
-function Counter({ value, suffix }) {
+function Counter({ value, suffix, delay = 0.6 }) {
   const [v, setV] = useState(0);
   const started = useRef(false);
-  const start = () => {
-    if (started.current) return;
-    started.current = true;
-    const dur = 1300;
-    const t0 = performance.now();
-    const tick = (t) => {
-      const p = Math.min(1, (t - t0) / dur);
-      const e = 1 - Math.pow(1 - p, 3);
-      setV(value * e);
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (started.current) return;
+      started.current = true;
+      const dur = 1300;
+      const t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        setV(value * e);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, delay * 1000);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
   const out = Number.isInteger(value) ? Math.round(v) : v.toFixed(1);
   return (
-    <motion.span
-      onViewportEnter={start}
-      viewport={{ once: true }}
-      className="font-serif font-semibold text-2xl sm:text-3xl text-[color:var(--ink)] tabular-nums"
-    >
+    <span className="font-serif font-semibold text-2xl sm:text-3xl text-[color:var(--ink)] tabular-nums">
       {out}
       <span className="font-mono text-[0.62rem] tracking-[0.14em] text-[color:var(--ink-soft)] ml-1">{suffix}</span>
-    </motion.span>
+    </span>
   );
 }
 
@@ -197,20 +196,19 @@ export function ScoreStage({ cfg, next }) {
             <motion.div
               key={r.label}
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.7 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.35, duration: 0.7 }}
+              data-testid={`score-row-${i}`}
             >
               <div className="flex items-end justify-between gap-4 mb-2.5">
                 <span className="text-sm sm:text-[0.95rem] text-[color:var(--ink)]">{r.label}</span>
                 {r.type === "counter" ? (
-                  <Counter value={r.value} suffix={r.suffix} />
+                  <Counter value={r.value} suffix={r.suffix} delay={0.5 + i * 0.35} />
                 ) : (
                   <motion.span
                     initial={{ opacity: 0, scale: 0.85 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: "backOut" }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6 + i * 0.35, duration: 0.5, ease: "backOut" }}
                     className="annotation text-xl whitespace-nowrap px-3 py-1 rounded-full"
                     style={{ border: "1px solid rgba(43,33,23,0.3)" }}
                   >
@@ -222,9 +220,8 @@ export function ScoreStage({ cfg, next }) {
                 <motion.div
                   className="h-full rounded-full bg-[color:var(--accent-2)]"
                   initial={{ width: 0 }}
-                  whileInView={{ width: `${r.pct}%` }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.12, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                  animate={{ width: `${r.pct}%` }}
+                  transition={{ delay: 0.5 + i * 0.35, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 />
               </div>
               {r.note && (
@@ -276,10 +273,10 @@ export function ApologyStage({ cfg, next }) {
               <motion.p
                 key={i}
                 initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.55, duration: 1.1 }}
                 className="font-serif font-medium text-3xl sm:text-4xl leading-[1.25] text-[color:var(--ink)]"
+                data-testid={`apology-line-${i}`}
               >
                 {l}
               </motion.p>
@@ -287,8 +284,7 @@ export function ApologyStage({ cfg, next }) {
           </div>
           <motion.p
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.5 + cfg.apology.lines.length * 0.55, duration: 1 }}
             className="annotation text-3xl mt-10"
           >
@@ -296,8 +292,7 @@ export function ApologyStage({ cfg, next }) {
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 1.2 + cfg.apology.lines.length * 0.55 }}
             className="mt-14"
           >
@@ -308,8 +303,7 @@ export function ApologyStage({ cfg, next }) {
         </div>
         <motion.div
           initial={{ opacity: 0, scale: 1.04 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6 }}
           className="bg-[color:var(--bg)] p-3 pb-4 paper-shadow rounded-[2px] rotate-1 max-w-sm mx-auto w-full"
         >

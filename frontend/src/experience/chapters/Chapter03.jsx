@@ -20,9 +20,8 @@ function FormPanel({ e }) {
           </div>
           <motion.span
             initial={{ opacity: 0, scale: 1.4, rotate: -14 }}
-            whileInView={{ opacity: 0.9, scale: 1, rotate: -8 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.6, duration: 0.5, ease: "backOut" }}
+            animate={{ opacity: 0.9, scale: 1, rotate: -8 }}
+            transition={{ delay: 1.1, duration: 0.5, ease: "backOut" }}
             className="shrink-0 font-mono text-[0.62rem] tracking-[0.24em] uppercase px-3 py-1.5 rounded-[2px] text-[color:var(--accent-2)]"
             style={{ border: "2px solid var(--accent-2)" }}
             data-testid="form-stamp"
@@ -35,9 +34,8 @@ function FormPanel({ e }) {
             <motion.div
               key={k}
               initial={{ opacity: 0, x: -12 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 + i * 0.12, duration: 0.6 }}
               className="flex items-baseline gap-3 py-2.5"
             >
               <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-[color:var(--ink-soft)] whitespace-nowrap">{k}</span>
@@ -150,7 +148,12 @@ export default function Chapter03({ cfg, next }) {
       </div>
 
       {/* the verdict */}
-      <div className="mt-16 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6, duration: 0.9 }}
+        className="mt-16 text-center"
+      >
         {!answered ? (
           <>
             <p className="font-serif font-medium text-2xl sm:text-3xl mb-8" data-testid="verdict-question">{e.question}</p>
@@ -164,7 +167,7 @@ export default function Chapter03({ cfg, next }) {
             </Btn>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </Stage>
   );
 }

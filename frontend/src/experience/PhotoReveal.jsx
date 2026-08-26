@@ -3,16 +3,15 @@ import { motion } from "framer-motion";
 
 // A single rediscovered photograph. Warm treatment, clipped paper frame,
 // caption + handwritten note reveal on tap/click. Responsive to any ratio.
-export default function PhotoReveal({ photo, index = 0, rotate = 0, onReveal }) {
+export default function PhotoReveal({ photo, index = 0, rotate = 0, onReveal, delay = 0 }) {
   const [open, setOpen] = useState(false);
   const portrait = photo.orientation === "portrait";
 
   return (
     <motion.figure
       initial={{ opacity: 0, y: 40, rotate: rotate * 1.6 }}
-      whileInView={{ opacity: 1, y: 0, rotate }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ opacity: 1, y: 0, rotate }}
+      transition={{ delay, duration: 1, ease: [0.22, 1, 0.36, 1] }}
       className="relative"
     >
       <motion.button
@@ -60,6 +59,7 @@ export default function PhotoReveal({ photo, index = 0, rotate = 0, onReveal }) 
         animate={{ opacity: open ? 1 : 0, y: open ? 0 : -6 }}
         transition={{ duration: 0.6 }}
         className="annotation text-xl sm:text-2xl mt-3 pl-1 leading-snug"
+        data-testid={`photo-${index}-caption`}
       >
         {photo.caption}
       </motion.p>

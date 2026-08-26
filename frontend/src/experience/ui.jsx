@@ -22,6 +22,21 @@ export function Stamp({ children, className = "" }) {
   );
 }
 
+// Dark sticker note — small text that pops against the beige (per user's edit)
+export function StickerNote({ children, className = "", delay = 1, rotate = 6 }) {
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1, rotate }}
+      transition={{ delay, duration: 0.7 }}
+      className={`annotation text-lg inline-block px-3.5 py-1.5 rounded-[3px] paper-shadow ${className}`}
+      style={{ backgroundColor: "#4A3B2C", color: "var(--bg-light)" }}
+    >
+      {children}
+    </motion.span>
+  );
+}
+
 // Primary button — pill, warm, tactile
 export function Btn({ children, onClick, className = "", variant = "solid", ...rest }) {
   const base =

@@ -1,0 +1,74 @@
+{
+  "summary": "Frontend regression testing for Memory Archive after replacement of whileInView scroll-triggered animations with on-load setTimeout-driven staggered animations. Verified WITHOUT any scrolling that Chapter 01/02/03, Score, and Apology stages animate elements to opacity=1 on mount. Ran full 16-step journey Boot -> Intro -> Ch01 -> Ch02 -> Ch03 -> Score -> transition-lost -> Apology -> Final -> Unlock. Also verified dark 'sticker note' visual style (bg rgb(74,59,44), light cream text) on intro, Ch01 and Ch02.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "detailed_verifications": {
+    "chapter_01_no_scroll": {
+      "t=2.2s": {"ch1-line-0": 1.0, "ch1-line-1": 0.21, "ch1-line-2": 0, "ch1-line-3": 0},
+      "t=3.0s": {"ch1-line-0": 1.0, "ch1-line-1": 1.0, "ch1-line-2": 0.42, "ch1-line-3": 0},
+      "t=4.5s": {"all_four_lines": 1.0},
+      "t=6.0s": {"all_four_lines": 1.0, "scrollY": 0},
+      "note": "Lines stagger ~0.75s apart as expected; all reach opacity 1 without any scroll interaction",
+      "confession_typewriter": "Rendered and completed (sub text 'The photos from last year...' and 'in my defence, I have no defence.' sticker visible; confession-cta reachable and clickable)",
+      "confession_cta_scrollY": 0
+    },
+    "chapter_02_no_scroll": {
+      "photo-0..4_opacity": [1,1,1,1,1],
+      "ch2-lost-line-0..2_opacity": [1,1,1],
+      "survived-cta_opacity": 1,
+      "scrollY_at_check": 0,
+      "photo-0_tap_reveals_caption": "photo-0-caption testid not present in DOM (caption may use different selector or render inline)"
+    },
+    "chapter_03": {
+      "form-stamp_opacity_at_3s": 0.9,
+      "panel-form_verdict-question_opacity": 1,
+      "panel-dot-1_swipe_to_letter": "panel-letter in viewport after click",
+      "yes_button_force_click": "worked (NO dodges on hover as expected)"
+    },
+    "score_stage": {
+      "rendered_text": "OFFICIAL ASSESSMENT | Apology 9.8/10 | Regret 100% | Composure 0.5/10",
+      "scrollY": 0,
+      "score-cta_visible": true,
+      "note": "Individual counter data-testids not exposed; counters populated final values visible in text without scrolling"
+    },
+    "apology_stage": {
+      "stage-apology_opacity_progression": {"0.5s": null, "1.5s": 0.98, "2.5s": 1.0, "4.0s": 1.0},
+      "apology-cta_opacity": 1,
+      "scrollY": 0,
+      "note": "Individual apology-line testids not exposed; stage container animates cleanly to opacity 1"
+    },
+    "sticker_notes_dark_style": {
+      "intro_'this took a while, ok'": {"bg": "rgb(74, 59, 44)", "color": "rgb(243, 233, 216)"},
+      "ch01_'// this is the bad part'": {"bg": "rgb(74, 59, 44)", "color": "rgb(243, 233, 216)"},
+      "ch02_'little proof we're still good at this'": {"bg": "rgb(74, 59, 44)", "color": "rgb(243, 233, 216)"},
+      "verdict": "PASS - all three dark stickers verified with correct computed background & light text"
+    },
+    "full_journey": "Boot -> Intro -> Chapter01 -> transition -> Chapter02 -> transition -> Chapter03 (form + swipe + yes/no + earn) -> Score -> stage-quiet(transition-lost auto) -> chapter-opener-04 -> Apology -> stage-final (final-choice yes/no) -> unlock/restart. All auto transitions advance. No stalled stages observed.",
+    "mobile_390x844_chapter_01": {
+      "ch1-line-0..3_opacity": [1,1,1,1],
+      "confession_visible": true,
+      "horizontal_overflow_px": 0,
+      "scrollY": 0
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "photo-0 caption element lacks a discoverable data-testid (expected 'photo-0-caption'); if this exists in Chapter02 it should be tagged for testability.",
+    "Individual score counter rows (apology/regret/composure) and apology-line-N elements have no data-testids - hard to verify per-row animation timing programmatically. Consider adding score-row-{key} and apology-line-{i} testids.",
+    "stage-final yes/no reuses generic 'yes-button'/'no-button' testids also present in Chapter03; if both stages ever mount concurrently this could cause selector collisions.",
+    "Sticker notes: consistent dark-note style is applied via inline styles across three different files - consider consolidating into the StickerNote component (ui.jsx) with a `tone='dark'` variant to prevent divergence."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "100% (all requested no-scroll animation behaviors verified)"},
+  "test_credentials": "None required (public app)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Fix from iteration_2 (replacing whileInView with on-mount setTimeout stagger) is verified: all key elements reach opacity 1 with scrollY=0. Selectors that don't exist in DOM (and thus were not verifiable): photo-0-caption, per-counter rows in score, individual apology-line-*. Mobile viewport hides 'this took a while' + Ch02 aside via `hidden sm:block`/`hidden md:inline-block` (intentional). Force-click yes-button in Ch03 & stage-final because MovingNoButton dodges on mouseenter.",
+  "rca of the issue": "Prior bug: whileInView animations never fired for elements below the initial fold because framer-motion intersection observers required the user to scroll. Fix (verified): Chapter01/02/03, Stages.jsx (Score, Apology), PhotoReveal.jsx now use animate + transition.delay with setTimeout-based Counter, so animations begin on mount regardless of scroll position. Verified by asserting opacity=1 on all target testids while window.scrollY remained 0."
+}
