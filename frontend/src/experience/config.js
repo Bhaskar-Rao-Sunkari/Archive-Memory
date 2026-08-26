@@ -215,7 +215,7 @@ export const config = {
     // Song reference (audio not included): "Memories" — Maroon 5.
     songTitle: "Memories",
     songArtist: "Maroon 5",
-    audioSrc: "", // e.g. "/audio/memories.mp3" — leave "" to hide the player
+    audioSrc: "/audio/memories.mp3", // starts automatically once Chapter 4 (Real Apology) begins, loops seamlessly
     restart: "replay the archive",
   },
 };

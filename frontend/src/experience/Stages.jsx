@@ -379,9 +379,8 @@ export function FinalRequestStage({ cfg, next }) {
 }
 
 /* ---------------- FINAL SCREEN — warm, not technical ---------------- */
-export function UnlockStage({ cfg, restart }) {
+export function UnlockStage({ cfg, restart, audioOn, onToggleAudio }) {
   const [open, setOpen] = useState(false);
-  const [audioOn, setAudioOn] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setOpen(true), 1500);
     return () => clearTimeout(t);
@@ -456,14 +455,13 @@ export function UnlockStage({ cfg, restart }) {
                 <div className="mt-10 inline-flex flex-col items-center gap-2">
                   <button
                     data-testid="audio-toggle"
-                    onClick={() => setAudioOn((v) => !v)}
+                    onClick={onToggleAudio}
                     className="rounded-full px-5 py-2 font-mono text-[0.62rem] tracking-[0.2em] uppercase text-[color:var(--ink)] hover:bg-[color:var(--surface)] transition-colors"
                     style={{ border: "1px solid rgba(43,33,23,0.35)" }}
                   >
-                    {audioOn ? "pause" : "play a little"} · {u.songTitle}
+                    {audioOn ? "pause" : "play"} · {u.songTitle}
                   </button>
                   <span className="label">{u.songTitle} — {u.songArtist}</span>
-                  <audio src={u.audioSrc} autoPlay={false} loop muted={!audioOn} ref={(el) => { if (el) { audioOn ? el.play().catch(() => {}) : el.pause(); } }} />
                 </div>
               ) : (
                 <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[color:var(--ink-soft)] mt-10">
