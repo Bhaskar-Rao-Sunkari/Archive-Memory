@@ -27,9 +27,9 @@ export default function Chapter01({ cfg, next }) {
         <Stamp>{p.stamp}</Stamp>
       </motion.div>
 
-      <div className="mt-12 sm:mt-16">
+      <div className="mt-12 sm:mt-16 space-y-8 sm:space-y-10">
         {p.lines.map((l, i) => (
-          <div key={i} className={`relative ${i === 0 ? "" : "mt-8 sm:mt-10"}`}>
+          <React.Fragment key={i}>
             <motion.p
               initial={{ opacity: 0, x: -32 }}
               animate={{ opacity: 1, x: 0 }}
@@ -44,15 +44,13 @@ export default function Chapter01({ cfg, next }) {
               {l}
             </motion.p>
             {i === 2 && (
-              <StickerNote
-                delay={lineDelay(2) + 0.6}
-                rotate={5}
-                className="absolute -top-9 right-0 sm:right-8 hidden sm:inline-block"
-              >
-                {p.marginNote}
-              </StickerNote>
+              <div className="!mt-4">
+                <StickerNote delay={lineDelay(2) + 0.6} rotate={-2}>
+                  {p.marginNote}
+                </StickerNote>
+              </div>
             )}
-          </div>
+          </React.Fragment>
         ))}
       </div>
 

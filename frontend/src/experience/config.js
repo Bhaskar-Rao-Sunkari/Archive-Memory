@@ -148,13 +148,13 @@ export const config = {
     swipeHint: "there's a formal application attached",
     letter: {
       tag: "APPLICATION № 001",
-      to: ["To,", "The Respected Keeper of Memories,", "Department of Last Year's Photos."],
+      to: ["To,", "The Respected Bansal Baby,", "Department of Last Year's Photos."],
       body: [
-        "Respected madam,",
+        "Respected Baby,",
         "I, the undersigned, hereby formally apologise for the Incident. I write to humbly request re-issuance of the lost archive, which was misplaced due to circumstances entirely within my control.",
         "If approved, I promise to guard it with both hands and at least 60% more common sense.",
       ],
-      signoff: ["Yours regretfully,", "the applicant"],
+      signoff: ["Yours regretfully,", "Bhaskar aka Rey"],
     },
     question: "Does the applicant deserve to have their request reviewed?",
     yes: "fine… I'm listening",
@@ -167,11 +167,11 @@ export const config = {
     kicker: "OFFICIAL ASSESSMENT",
     title: "The applicant has been evaluated.",
     rows: [
-      { label: "Apology", type: "counter", value: 9.8, suffix: " / 10", pct: 98 },
-      { label: "Regret", type: "counter", value: 100, suffix: "%", pct: 100 },
-      { label: "Common sense before deleting the photos", type: "counter", value: 0.5, suffix: " / 10", pct: 5, note: "under investigation" },
-      { label: "Effort to fix the situation", type: "badge", display: "suspiciously high", pct: 92 },
-      { label: "Chances of forgiveness", type: "badge", display: "pending your response…", pct: 62 },
+      { label: "Apology", type: "counter", value: 7, suffix: " / 10", pct: 70 },
+      { label: "Regret", type: "counter", value: 10, suffix: " / 10", pct: 100 },
+      { label: "Common sense before deleting the photos", type: "counter", value: 0, suffix: " / 10", pct: 0, note: "under investigation" },
+      { label: "Effort to fix the situation", type: "static", display: "∞ / 10", pct: 100 },
+      { label: "Chances of forgiveness", type: "static", display: "it's in you.", pct: 62 },
     ],
     cta: "alright — the serious part",
   },
@@ -184,12 +184,11 @@ export const config = {
   // ---- Chapter 04 — The Real Apology ----
   apology: {
     lines: [
-      "Deleting them was careless.",
-      "And I know it hurt — not because of the files,",
-      "but because of what they held.",
-      "They were things we made together.",
+      "Deleting them was careless and the dumbest decision I ever made.",
+      "Because of that, I know I don't deserve to have them.",
+      "But do I deserve a chance? Forgiveness?",
     ],
-    annotation: "I'm sorry. Genuinely.",
+    annotation: "I'm genuinely sorry.",
     cta: "can I ask you something?",
   },
 
@@ -198,7 +197,16 @@ export const config = {
     line: "Would you send me the photos from last year again?",
     sub: "That's the whole reason for all of this.",
     yes: "RELEASE THE ARCHIVE",
-    no: "hmm, let me think",
+    notSure: "not sure",
+    notSurePage: {
+      lines: [
+        "It's okay. It's a big mistake. I understand.",
+        "I'll try my best to earn the pictures and get those back.",
+        "I'll keep trying every single day.",
+        "I'm truly sorry.",
+      ],
+      back: "okay… ask me again",
+    },
   },
 
   // ---- Final screen ----

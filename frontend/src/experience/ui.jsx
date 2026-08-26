@@ -38,9 +38,10 @@ export function StickerNote({ children, className = "", delay = 1, rotate = 6 })
 }
 
 // Primary button — pill, warm, tactile
-export function Btn({ children, onClick, className = "", variant = "solid", ...rest }) {
+export function Btn({ children, onClick, className = "", variant = "solid", size = "md", ...rest }) {
   const base =
-    "relative inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-mono text-[0.72rem] tracking-[0.2em] uppercase transition-[transform,background-color,color,box-shadow] duration-500 will-change-transform select-none";
+    "relative inline-flex items-center justify-center gap-2 rounded-full font-mono tracking-[0.2em] uppercase transition-[transform,background-color,color,box-shadow] duration-500 will-change-transform select-none";
+  const sizes = size === "lg" ? "px-9 py-4 text-[0.8rem]" : "px-7 py-3 text-[0.72rem]";
   const styles =
     variant === "solid"
       ? "bg-[color:var(--ink)] text-[color:var(--bg-light)] hover:bg-[color:var(--accent-2)] paper-shadow"
@@ -50,7 +51,7 @@ export function Btn({ children, onClick, className = "", variant = "solid", ...r
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className={`${base} ${styles} ${className}`}
+      className={`${base} ${sizes} ${styles} ${className}`}
       {...rest}
     >
       {children}

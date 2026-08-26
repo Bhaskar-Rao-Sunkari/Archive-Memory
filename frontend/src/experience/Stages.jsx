@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Stage, Btn, Label, Stamp, fadeUp } from "./ui";
 import Typewriter from "../components/Typewriter";
-import MovingNoButton from "./MovingNoButton";
 
 /* ---------------- BOOT — ARCHIVE V.01 ---------------- */
 export function BootStage({ cfg, next }) {
@@ -209,8 +208,7 @@ export function ScoreStage({ cfg, next }) {
                     initial={{ opacity: 0, scale: 0.85 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6 + i * 0.35, duration: 0.5, ease: "backOut" }}
-                    className="annotation text-xl whitespace-nowrap px-3 py-1 rounded-full"
-                    style={{ border: "1px solid rgba(43,33,23,0.3)" }}
+                    className="font-serif font-semibold text-2xl sm:text-3xl text-[color:var(--ink)] whitespace-nowrap"
                   >
                     {r.display}
                   </motion.span>
@@ -320,19 +318,60 @@ export function ApologyStage({ cfg, next }) {
 
 /* ---------------- FINAL QUESTION ---------------- */
 export function FinalRequestStage({ cfg, next }) {
+  const [view, setView] = useState("question");
+  const f = cfg.finalRequest;
+
+  if (view === "notsure") {
+    return (
+      <Stage testid="stage-notsure" bg="var(--bg-light)">
+        <div className="text-center max-w-xl mx-auto">
+          <div className="space-y-4">
+            {f.notSurePage.lines.map((l, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.5, duration: 1 }}
+                className="font-serif font-medium text-2xl sm:text-3xl leading-snug text-[color:var(--ink)]"
+                data-testid={`notsure-line-${i}`}
+              >
+                {l}
+              </motion.p>
+            ))}
+          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 + f.notSurePage.lines.length * 0.5, duration: 0.9 }}
+            className="mt-12"
+          >
+            <Btn variant="ghost" onClick={() => setView("question")} data-testid="notsure-back">
+              {f.notSurePage.back}
+            </Btn>
+          </motion.div>
+        </div>
+      </Stage>
+    );
+  }
+
   return (
     <Stage testid="stage-final" bg="var(--bg-light)">
       <div className="text-center max-w-xl mx-auto">
-        <Label>{cfg.finalRequest.kicker}</Label>
+        <Label>{f.kicker}</Label>
         <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4 }} className="mx-auto mt-8 w-40 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px] -rotate-2">
           <div className="relative aspect-square overflow-hidden bg-[color:var(--accent)]">
             <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
           </div>
         </motion.div>
-        <h2 className="font-serif font-semibold text-3xl sm:text-5xl mt-8 leading-tight">{cfg.finalRequest.line}</h2>
-        <p className="mt-4 text-[color:var(--ink-soft)]">{cfg.finalRequest.sub}</p>
-        <div className="mt-12">
-          <MovingNoButton yesLabel={cfg.finalRequest.yes} noLabel={cfg.finalRequest.no} onYes={next} testid="final-choice" />
+        <h2 className="font-serif font-semibold text-3xl sm:text-5xl mt-8 leading-tight">{f.line}</h2>
+        <p className="mt-4 text-[color:var(--ink-soft)]">{f.sub}</p>
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6" data-testid="final-choice">
+          <Btn size="lg" onClick={next} data-testid="final-yes">
+            {f.yes}
+          </Btn>
+          <Btn size="lg" variant="ghost" onClick={() => setView("notsure")} data-testid="final-notsure">
+            {f.notSure}
+          </Btn>
         </div>
       </div>
     </Stage>

@@ -13,8 +13,8 @@ function FormPanel({ e }) {
       <div className="border border-dashed rounded-sm p-6 sm:p-8" style={{ borderColor: "rgba(43,33,23,0.3)" }}>
         <div className="flex items-start justify-between gap-4 pb-4 border-b" style={{ borderColor: "rgba(43,33,23,0.25)" }}>
           <div>
-            <p className="font-mono text-[0.62rem] tracking-[0.26em] uppercase text-[color:var(--ink)]">{e.formTitle}</p>
-            <p className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-[color:var(--ink-faint)] mt-1.5">
+            <p className="font-mono text-[0.68rem] tracking-[0.24em] uppercase text-[color:var(--ink)] font-medium">{e.formTitle}</p>
+            <p className="font-mono text-[0.58rem] tracking-[0.2em] uppercase text-[color:var(--ink-soft)] mt-1.5">
               dept. of lost archives · confidential
             </p>
           </div>
@@ -38,9 +38,9 @@ function FormPanel({ e }) {
               transition={{ delay: 0.3 + i * 0.12, duration: 0.6 }}
               className="flex items-baseline gap-3 py-2.5"
             >
-              <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-[color:var(--ink-soft)] whitespace-nowrap">{k}</span>
+              <span className="font-mono text-[0.68rem] tracking-[0.16em] uppercase text-[color:var(--ink)] font-medium whitespace-nowrap">{k}</span>
               <span className="flex-1 border-b border-dotted translate-y-[-3px]" style={{ borderColor: "rgba(43,33,23,0.35)" }} />
-              <span className={`text-right ${v === v.toUpperCase() && v.length > 3 ? "font-mono text-[0.66rem] tracking-[0.2em] text-[color:var(--accent-2)]" : "annotation text-lg"}`}>
+              <span className={`text-right ${v === v.toUpperCase() && v.length > 3 ? "font-mono text-[0.72rem] tracking-[0.2em] font-medium text-[color:var(--accent-2)]" : "annotation text-xl !text-[color:var(--ink)]"}`}>
                 {v}
               </span>
             </motion.div>
@@ -127,17 +127,14 @@ export default function Chapter03({ cfg, next }) {
         </motion.div>
       </div>
 
-      <div className="mt-4 flex justify-center">
+      <div className="mt-4 flex flex-col items-center gap-2">
         <button
           data-testid="swipe-hint"
           onClick={() => setPanel((p) => (p === 0 ? 1 : 0))}
           className="group inline-flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.22em] uppercase text-[color:var(--ink-soft)] hover:text-[color:var(--ink)] transition-colors"
         >
           {panel === 0 ? (
-            <>
-              {e.swipeHint}
-              <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>→</motion.span>
-            </>
+            <>{e.swipeHint}</>
           ) : (
             <>
               <motion.span animate={{ x: [0, -5, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>←</motion.span>
@@ -145,6 +142,26 @@ export default function Chapter03({ cfg, next }) {
             </>
           )}
         </button>
+        {panel === 0 && (
+          <motion.button
+            data-testid="swipe-left-indicator"
+            onClick={() => setPanel(1)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[color:var(--surface)]"
+            style={{ border: "1px solid rgba(43,33,23,0.3)" }}
+          >
+            <motion.span
+              animate={{ x: [0, -8, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[color:var(--accent-2)] text-base leading-none"
+            >
+              ←
+            </motion.span>
+            <span className="font-mono text-[0.66rem] tracking-[0.24em] uppercase text-[color:var(--ink)] font-medium">swipe left</span>
+          </motion.button>
+        )}
       </div>
 
       {/* the verdict */}
