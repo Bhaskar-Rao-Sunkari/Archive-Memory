@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Grain from "../components/Grain";
 import ShareButton from "./ShareButton";
 import ArchiveTransition from "./ArchiveTransition";
+import ChapterOpener from "./ChapterOpener";
+import { config as baseConfig } from "./config";
 import {
   BootStage, IntroStage, ProblemStage, ConfessionStage, MemoriesStage,
   LostStage, EarnStage, ScoreStage, ApologyStage, FinalRequestStage, UnlockStage,
@@ -16,28 +18,57 @@ export default function Experience({ cfg }) {
   }, []);
   const restart = useCallback(() => setStep(0), []);
 
+  const chapters = cfg.chapters || baseConfig.chapters;
+  const [ch1, ch2, ch3, ch4] = chapters;
+
+  // step index → chapter marker ("" = prologue / hidden)
   const steps = [
-    (k) => <BootStage key={k} cfg={cfg} next={next} />,
-    (k) => <IntroStage key={k} cfg={cfg} next={next} />,
-    (k) => <ProblemStage key={k} cfg={cfg} next={next} />,
-    (k) => <ConfessionStage key={k} cfg={cfg} next={next} />,
-    (k) => <MemoriesStage key={k} cfg={cfg} next={next} />,
-    (k) => <ArchiveTransition key={k} testid="transition-missing" text={cfg.archive.missing} onDone={next} />,
-    (k) => <LostStage key={k} cfg={cfg} next={next} />,
-    (k) => <EarnStage key={k} cfg={cfg} next={next} />,
-    (k) => <ScoreStage key={k} cfg={cfg} next={next} />,
-    (k) => <ArchiveTransition key={k} testid="transition-lost" text={cfg.archive.lost} tone="dark" onDone={next} />,
-    (k) => <ApologyStage key={k} cfg={cfg} next={next} />,
-    (k) => <FinalRequestStage key={k} cfg={cfg} next={next} />,
-    (k) => <UnlockStage key={k} cfg={cfg} restart={restart} />,
+    { ch: null, el: (k) => <BootStage key={k} cfg={cfg} next={next} /> },
+    { ch: null, el: (k) => <IntroStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch1, el: (k) => <ChapterOpener key={k} chapter={ch1} next={next} /> },
+    { ch: ch1, el: (k) => <ProblemStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch1, el: (k) => <ConfessionStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch2, el: (k) => <ChapterOpener key={k} chapter={ch2} next={next} /> },
+    { ch: ch2, el: (k) => <MemoriesStage key={k} cfg={cfg} next={next} /> },
+    { ch: null, el: (k) => <ArchiveTransition key={k} testid="transition-missing" text={cfg.archive.missing} onDone={next} /> },
+    { ch: ch2, el: (k) => <LostStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch3, el: (k) => <ChapterOpener key={k} chapter={ch3} next={next} /> },
+    { ch: ch3, el: (k) => <EarnStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch3, el: (k) => <ScoreStage key={k} cfg={cfg} next={next} /> },
+    { ch: null, el: (k) => <ArchiveTransition key={k} testid="transition-lost" text={cfg.archive.lost} tone="dark" onDone={next} /> },
+    { ch: ch4, el: (k) => <ChapterOpener key={k} chapter={ch4} next={next} tone="dark" /> },
+    { ch: ch4, el: (k) => <ApologyStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch4, el: (k) => <FinalRequestStage key={k} cfg={cfg} next={next} /> },
+    { ch: ch4, el: (k) => <UnlockStage key={k} cfg={cfg} restart={restart} /> },
   ];
 
   const idx = Math.min(step, steps.length - 1);
+  const current = steps[idx];
 
   return (
     <div className="relative min-h-screen vignette" data-testid="experience-root">
       <Grain />
-      <AnimatePresence mode="wait">{steps[idx](`step-${idx}`)}</AnimatePresence>
+      <AnimatePresence mode="wait">
+        {current.ch && (
+          <motion.div
+            key={current.ch.n}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="fixed top-5 left-6 sm:left-8 z-40 flex items-center gap-3 pointer-events-none"
+            data-testid="chapter-marker"
+          >
+            <span className="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-[color:var(--ink-faint)]">
+              CH {current.ch.n} / 04
+            </span>
+            <span className="hidden sm:inline font-serif italic text-sm text-[color:var(--ink-faint)]">
+              {current.ch.title}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence mode="wait">{current.el(`step-${idx}`)}</AnimatePresence>
       <ShareButton cfg={cfg} />
     </div>
   );

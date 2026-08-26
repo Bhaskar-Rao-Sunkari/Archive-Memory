@@ -27,6 +27,14 @@ Boot(INITIALISING) → Intro → Problem(progressive reveal) → Confession → 
 - All editable content centralized in `/app/frontend/src/experience/config.js`
 - Verified end-to-end (curl + desktop/mobile screenshots), no horizontal overflow
 
+## V2 Cinematic Chapter Redesign (2026-06, user-approved mapping)
+- Strict 4-chapter structure with full-screen cinematic openers (`ChapterOpener.jsx`): giant serif watermark number, ruled "CHAPTER 0N" label, masked word-by-word title reveal, story CTA ("Open Chapter 0N")
+- Chapters: 01 The Confession · 02 What Survived · 03 The Negotiation · 04 The Real Apology (dark tone opener after MEMORY LOST)
+- Persistent chapter marker HUD top-left ("CH 0N / 04 · title"), hidden on prologue/transitions
+- Contrast fix: --ink #2B2117, soft/faint opacities raised, --accent-2 #6E5941; display headings bumped to font-semibold
+- Story buttons: "step inside", "but wait — there's a catch", chapter CTAs
+- 17-step flow verified 100% by testing agent (iteration_1.json): full journey, both moving NO buttons, dark CH04 opener, share link POST/GET, mobile no-overflow
+
 ## Backlog (P1/P2)
 - Optional per-photo handwritten note editor UI
 - Lenis momentum scroll on gallery

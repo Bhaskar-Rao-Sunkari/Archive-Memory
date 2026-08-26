@@ -8,11 +8,11 @@
   --bg-light: #F3E9D8;
   --surface: #EDE0CC;
   --accent: #C8B294;
-  --accent-2: #806B54;
-  --ink: #3F352C;
-  --ink-soft: rgba(63, 53, 44, 0.62);
-  --ink-faint: rgba(63, 53, 44, 0.34);
-  --line: rgba(63, 53, 44, 0.16);
+  --accent-2: #6E5941;
+  --ink: #2B2117;
+  --ink-soft: rgba(43, 33, 23, 0.74);
+  --ink-faint: rgba(43, 33, 23, 0.45);
+  --line: rgba(43, 33, 23, 0.2);
 }
 
 * { box-sizing: border-box; }

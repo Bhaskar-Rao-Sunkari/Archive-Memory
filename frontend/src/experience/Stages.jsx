@@ -58,7 +58,7 @@ export function BootStage({ cfg, next }) {
               className="mt-12"
             >
               <Btn onClick={next} data-testid="boot-enter">
-                enter
+                step inside
               </Btn>
             </motion.div>
           )}
@@ -81,7 +81,7 @@ export function IntroStage({ cfg, next }) {
           initial="hidden"
           animate="show"
           custom={1}
-          className="font-serif text-4xl sm:text-6xl leading-[1.05] mt-6"
+          className="font-serif font-semibold text-4xl sm:text-6xl leading-[1.05] mt-6"
         >
           {cfg.intro.line}
         </motion.h2>
@@ -123,7 +123,7 @@ export function ProblemStage({ cfg, next }) {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className={`font-serif leading-tight ${i === lines.length - 1 ? "text-3xl sm:text-4xl text-[color:var(--ink)]" : "text-2xl sm:text-3xl text-[color:var(--ink-soft)]"}`}
+            className={`font-serif leading-tight ${i === lines.length - 1 ? "font-semibold text-3xl sm:text-5xl text-[color:var(--ink)]" : "font-medium text-2xl sm:text-3xl text-[color:var(--ink-soft)]"}`}
           >
             {l}
           </motion.p>
@@ -155,7 +155,7 @@ export function ConfessionStage({ cfg, next }) {
   return (
     <Stage testid="stage-confession">
       <Label>THE PART WHERE I ADMIT IT</Label>
-      <h2 className="font-serif text-5xl sm:text-7xl mt-6 leading-none">
+      <h2 className="font-serif font-semibold text-5xl sm:text-7xl mt-6 leading-none">
         <Typewriter text={cfg.confession.line} speed={80} onDone={() => setTyped(true)} />
       </h2>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: typed ? 1 : 0 }} transition={{ duration: 0.9 }}>
@@ -178,7 +178,7 @@ export function MemoriesStage({ cfg, next }) {
     <Stage testid="stage-memories" className="!justify-start pt-24">
       <div className="text-center mb-12">
         <Label>{cfg.memoriesIntro.kicker}</Label>
-        <h2 className="font-serif text-4xl sm:text-5xl mt-4">{cfg.memoriesIntro.line}</h2>
+        <h2 className="font-serif font-semibold text-4xl sm:text-5xl mt-4">{cfg.memoriesIntro.line}</h2>
         <p className="annotation text-xl mt-3">{cfg.memoriesIntro.sub}</p>
       </div>
       <div className="columns-1 sm:columns-2 gap-6 [&>*]:mb-6">
@@ -190,7 +190,7 @@ export function MemoriesStage({ cfg, next }) {
       </div>
       <div className="text-center mt-14 mb-8">
         <Btn onClick={next} data-testid="memories-cta" variant={revealed > 0 ? "solid" : "ghost"}>
-          keep going
+          but wait — there's a catch
         </Btn>
       </div>
     </Stage>
@@ -202,7 +202,7 @@ export function LostStage({ cfg, next }) {
   return (
     <Stage testid="stage-lost">
       <div className="max-w-xl">
-        <motion.h2 variants={fadeUp} initial="hidden" animate="show" custom={0} className="font-serif text-3xl sm:text-5xl leading-tight">
+        <motion.h2 variants={fadeUp} initial="hidden" animate="show" custom={0} className="font-serif font-semibold text-3xl sm:text-5xl leading-tight">
           {cfg.lostReveal.line}
         </motion.h2>
         <motion.p variants={fadeUp} initial="hidden" animate="show" custom={1} className="mt-6 text-lg text-[color:var(--ink-soft)]">
@@ -322,7 +322,7 @@ export function ApologyStage({ cfg, next }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 + i * 0.5, duration: 1.1 }}
-                className="font-serif text-2xl sm:text-3xl leading-snug text-[color:var(--ink)]"
+                className="font-serif font-medium text-2xl sm:text-3xl leading-snug text-[color:var(--ink)]"
               >
                 {l}
               </motion.p>
@@ -365,7 +365,7 @@ export function FinalRequestStage({ cfg, next }) {
             <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
           </div>
         </motion.div>
-        <h2 className="font-serif text-3xl sm:text-5xl mt-8 leading-tight">{cfg.finalRequest.line}</h2>
+        <h2 className="font-serif font-semibold text-3xl sm:text-5xl mt-8 leading-tight">{cfg.finalRequest.line}</h2>
         <p className="mt-4 text-[color:var(--ink-soft)]">{cfg.finalRequest.sub}</p>
         <div className="mt-12">
           <MovingNoButton yesLabel={cfg.finalRequest.yes} noLabel={cfg.finalRequest.no} onYes={next} testid="final-choice" />
@@ -403,7 +403,7 @@ export function UnlockStage({ cfg, restart }) {
         <AnimatePresence>
           {recovered && (
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }}>
-              <h2 className="font-serif text-4xl sm:text-6xl mt-10">{u.line}</h2>
+              <h2 className="font-serif font-semibold text-4xl sm:text-6xl mt-10">{u.line}</h2>
               <p className="mt-5 text-lg text-[color:var(--ink-soft)]">{u.sub}</p>
 
               {u.audioSrc ? (

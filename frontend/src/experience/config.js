@@ -12,6 +12,34 @@ export const config = {
     lost: "MEMORY LOST",
   },
 
+  // ---- The four chapters of the story ----
+  chapters: [
+    {
+      n: "01",
+      title: "The Confession",
+      sub: "the part where I admit what I did",
+      cta: "Open Chapter 01",
+    },
+    {
+      n: "02",
+      title: "What Survived",
+      sub: "not everything is gone. promise.",
+      cta: "Open Chapter 02",
+    },
+    {
+      n: "03",
+      title: "The Negotiation",
+      sub: "in which I attempt to earn it back",
+      cta: "Open Chapter 03",
+    },
+    {
+      n: "04",
+      title: "The Real Apology",
+      sub: "no more jokes. mostly.",
+      cta: "Open Chapter 04",
+    },
+  ],
+
   // ---- Current-year photos (placeholders — replace src with real ones) ----
   // orientation just hints the frame ratio: "portrait" | "landscape"
   photos: [
