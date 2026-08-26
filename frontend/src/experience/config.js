@@ -45,44 +45,38 @@ export const config = {
     },
   ],
 
-  // ---- Current-year photos (placeholders — replace src with real ones) ----
+  // ---- Current-year photos ----
   photos: [
     {
-      src: "https://images.unsplash.com/photo-1758225104742-718edea1f371?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
-      caption: "the one where neither of us stopped laughing",
-      note: "// placeholder — swap me",
+      src: "/images/photo-01.jpg",
+      caption: "Where it all started",
+      note: "",
+      orientation: "landscape",
+    },
+    {
+      src: "/images/photo-02.jpg",
+      caption: "The trip that made it official",
+      note: "",
       orientation: "portrait",
     },
     {
-      src: "https://images.unsplash.com/photo-1532969200589-57f1fe57aaab?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
-      caption: "we stayed until the light went gold",
-      note: "found: this year",
-      orientation: "landscape",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1583606784123-7c244f00d29c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
-      caption: "you insisted on this exact spot",
-      note: "// placeholder",
+      src: "/images/photo-03.jpg",
+      caption: "The Trip where I knew - It's her ❤️",
+      note: "",
       orientation: "portrait",
     },
     {
-      src: "https://images.pexels.com/photos/35867832/pexels-photo-35867832.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      caption: "somehow it got late again",
-      note: "found: this year",
-      orientation: "landscape",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
-      caption: "proof we still make new ones",
-      note: "// keep this one",
-      orientation: "landscape",
+      src: "/images/photo-04.jpg",
+      caption: "A random dinner, a not-so-random person",
+      note: "",
+      orientation: "portrait",
     },
   ],
 
-  // The single strongest photo used in the quiet emotional section + final
+  // The single strongest photo used in the apology + final acceptance screens
   heroPhoto: {
-    src: "https://images.unsplash.com/photo-1552334645-3f7a860728e8?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
-    caption: "us — this year",
+    src: "/images/hero.jpg",
+    caption: "",
   },
 
   // ---- Pre-chapter gate ----

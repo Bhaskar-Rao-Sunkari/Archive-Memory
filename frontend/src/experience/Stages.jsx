@@ -303,13 +303,13 @@ export function ApologyStage({ cfg, next }) {
           initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6 }}
-          className="bg-[color:var(--bg)] p-3 pb-4 paper-shadow rounded-[2px] rotate-1 max-w-sm mx-auto w-full"
+          className="bg-[color:var(--bg)] p-3 pb-4 paper-shadow rounded-[2px] rotate-1 max-w-lg mx-auto w-full"
         >
           <div className="relative aspect-[3/4] overflow-hidden bg-[color:var(--accent)]">
-            <img src={cfg.heroPhoto.src} alt={cfg.heroPhoto.caption} className="absolute inset-0 w-full h-full object-cover photo-warm" />
+            <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
             <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "inset 0 0 70px rgba(43,33,23,0.2)" }} />
           </div>
-          <p className="annotation text-lg mt-2">{cfg.heroPhoto.caption}</p>
+          {cfg.heroPhoto.caption && <p className="annotation text-lg mt-2">{cfg.heroPhoto.caption}</p>}
         </motion.div>
       </div>
     </Stage>
@@ -358,8 +358,8 @@ export function FinalRequestStage({ cfg, next }) {
     <Stage testid="stage-final" bg="var(--bg-light)">
       <div className="text-center max-w-xl mx-auto">
         <Label>{f.kicker}</Label>
-        <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4 }} className="mx-auto mt-8 w-40 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px] -rotate-2">
-          <div className="relative aspect-square overflow-hidden bg-[color:var(--accent)]">
+        <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4 }} className="mx-auto mt-8 w-64 sm:w-72 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px] -rotate-2">
+          <div className="relative aspect-[3/4] overflow-hidden bg-[color:var(--accent)]">
             <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
           </div>
         </motion.div>
@@ -421,12 +421,12 @@ export function UnlockStage({ cfg, restart }) {
                 initial={{ opacity: 0, scale: 1.06, rotate: -3 }}
                 animate={{ opacity: 1, scale: 1, rotate: 2 }}
                 transition={{ duration: 1.4, delay: 0.2 }}
-                className="mx-auto mt-10 w-44 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px]"
+                className="mx-auto mt-10 w-64 sm:w-80 bg-[color:var(--bg)] p-2.5 pb-3 paper-shadow rounded-[2px]"
               >
-                <div className="relative aspect-square overflow-hidden bg-[color:var(--accent)]">
+                <div className="relative aspect-[3/4] overflow-hidden bg-[color:var(--accent)]">
                   <img src={cfg.heroPhoto.src} alt="us" className="absolute inset-0 w-full h-full object-cover photo-warm" />
                 </div>
-                <p className="annotation text-base mt-1.5">{cfg.heroPhoto.caption}</p>
+                {cfg.heroPhoto.caption && <p className="annotation text-base mt-1.5">{cfg.heroPhoto.caption}</p>}
               </motion.div>
 
               <div className="mt-10 space-y-3">
